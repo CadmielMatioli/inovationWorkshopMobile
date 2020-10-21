@@ -13,7 +13,7 @@ class App extends React.Component {
         estado: []
     };
     componentDidMount() {
-        fetch('http://caddev.pythonanywhere.com/api/states/')
+        fetch('https://innovationworkshopbuilded.herokuapp.com/apicov/states/')
             .then(res => res.json())
             .then(res => {
                 this.setState({
@@ -21,7 +21,7 @@ class App extends React.Component {
                 });
             });
 
-        fetch('http://caddev.pythonanywhere.com/api/state/sp')
+        fetch('https://innovationworkshopbuilded.herokuapp.com/apicov/state/sp')
             .then(res => res.json())
             .then(res => {
                 this.setState({
@@ -47,25 +47,6 @@ class App extends React.Component {
         }
 
         return data;
-    }
-    valuesContributionGraph(){
-        var label = [];
-        var cases = [];
-        var data = [];
-        var formatDate;
-        var dateFormated;
-        this.state.states.map(function(item, index){
-            if(item.cases >= 100000){
-                formatDate = item.datetime.split('-')
-                dateFormated = formatDate[2]+'-'+formatDate[1]+'-'+formatDate[0];
-                label[index] = item.datetime;
-                cases[index] = item.cases;
-                data[index] = { date: Moment(dateFormated).format('YYYY-MM-DD'), count: item.cases };
-            }
-        });
-        const values = data;
-       
-        return values;
     }
     valuesPieChart(){
         var data = [];
@@ -111,7 +92,7 @@ class App extends React.Component {
                         </Card>
                        
                         <Card>
-                            <Card.Title>Grafico de Casos maior ou igual a 100000 </Card.Title>
+                            <Card.Title>Grafico de recuperados maior ou igual a 100000 </Card.Title>
                             <Card.Divider/>
                             <ProgressChart
                                 data={this.valuesProgressChart()}
