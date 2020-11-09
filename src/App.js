@@ -10,10 +10,11 @@ import { DataTable } from 'react-native-paper';
 class App extends React.Component {
     state = {
         states: [],
-        estado: []
+        estado: [],
+        twitter: []
     };
     componentDidMount() {
-        fetch('https://innovationworkshopbuilded.herokuapp.com/apicov/states/')
+        fetch(base_url + '/apicov/states/')
             .then(res => res.json())
             .then(res => {
                 this.setState({
@@ -21,11 +22,19 @@ class App extends React.Component {
                 });
             });
 
-        fetch('https://innovationworkshopbuilded.herokuapp.com/apicov/state/sp')
+        fetch(base_url + '/apicov/state/sp')
             .then(res => res.json())
             .then(res => {
                 this.setState({
                     estado: res.list[0]
+                });
+            });
+
+        fetch(base_url + '/apicov/tweets/sentiment')
+            .then(res => res.json())
+            .then(res => {
+                this.setState({
+                    twitter: res.list
                 });
             });
     }
@@ -70,6 +79,35 @@ class App extends React.Component {
             }
             data.sort(function ( a, b ) { return b - a; } );
         });           
+        return data;
+    }
+    valuetwitterChart(){ 
+        var data = [];
+      
+        this.state.twitter.map(function(item, index){
+            console.log(item.positive)
+            data = [{
+                    name: "Feliz",
+                    population:item.positive,
+                    color: randomColor(),
+                    legendFontColor: 'rgba(26, 255, 146,1)',
+                    legendFontSize: 12
+                },     
+                {
+                    name: "Neutro",
+                    population: item.neutral,
+                    color: randomColor(),
+                    legendFontColor: 'rgba(26, 255, 146,1)',
+                    legendFontSize: 12 
+                },
+                {
+                    name: "Triste",
+                    population: item.negative,
+                    color: randomColor(),
+                    legendFontColor: 'rgba(26, 255, 146,1)',
+                    legendFontSize: 12 
+                }];
+        }); 
         return data;
     }
 
@@ -118,6 +156,20 @@ class App extends React.Component {
                                 avoidFalseZero={true}
                             />
                         </Card>
+
+                        <Card>
+                            <Card.Title>Grafico de Casos maior ou igual a 100000 </Card.Title>
+                            <Card.Divider/>
+                            <PieChart
+                                data={this.valuetwitterChart()}
+                                width={screenWidth}
+                                height={220}
+                                chartConfig={chartConfig}
+                                accessor="population"
+                                backgroundColor="#1E2923"
+                                avoidFalseZero={true}
+                            />
+                        </Card>
               
                         <Card>
                             <DataTable style={{textAlign: 'center'}}>
@@ -148,7 +200,7 @@ class App extends React.Component {
         ); 
     }
 }
-
+const base_url = 'https://oficinadeinovacao.herokuapp.com'
 const chartConfig = {
     backgroundGradientFrom: '#1E2923',
     backgroundGradientTo: '#08130D',
